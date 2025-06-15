@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+twilio
+openai
+httpx
+gtts
+python-dotenv
+pydub
+playwright
+jinja2
+rapidfuzz

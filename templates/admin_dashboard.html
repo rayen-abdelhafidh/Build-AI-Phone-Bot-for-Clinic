@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f8fb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            padding: 32px 40px 40px 40px;
+        }
+        h1 {
+            color: #1a237e;
+            border-bottom: 2px solid #e3e7ed;
+            padding-bottom: 10px;
+            margin-top: 32px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+        form.inline {
+            display: inline;
+        }
+        input[type="text"], input[type="password"], select {
+            padding: 7px 12px;
+            border: 1px solid #b0bec5;
+            border-radius: 5px;
+            margin-right: 8px;
+            font-size: 1em;
+        }
+        button {
+            background: #1a237e;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 7px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #3949ab;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+            background: #fafbfc;
+        }
+        th, td {
+            border: 1px solid #e3e7ed;
+            padding: 10px 8px;
+            text-align: left;
+        }
+        th {
+            background: #e3e7ed;
+            color: #1a237e;
+        }
+        .api-section {
+            background: #e3e7ed;
+            padding: 18px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .api-section label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            color: #1a237e;
+            font-weight: 500;
+        }
+        .api-section input[type="text"], .api-section input[type="password"] {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            margin-top: 0;
+        }
+        .department-block {
+            background: #f6f8fc;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .department-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .doctor-list {
+            margin-left: 18px;
+            margin-top: 10px;
+        }
+        .doctor-list li {
+            margin-bottom: 6px;
+        }
+        .add-doctor-form {
+            margin-top: 8px;
+        }
+        @media (max-width: 900px) {
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="section-title">Admin Dashboard</h1>
+
+        <div class="api-section">
+            <h2>API Settings</h2>
+            <form method="post" action="/admin/update_settings">
+                <label>Twilio Account SID:</label>
+                <input type="text" name="twilio_account_sid" value="{{ settings['TWILIO_ACCOUNT_SID']|default('') }}">
+                <label>Twilio Auth Token:</label>
+                <input type="password" name="twilio_auth_token" value="{{ settings['TWILIO_AUTH_TOKEN']|default('') }}">
+                <label>OpenAI API Key:</label>
+                <input type="password" name="openai_api_key" value="{{ settings['OPENAI_API_KEY']|default('') }}">
+                <button type="submit">Update API Settings</button>
+            </form>
+        </div>
+
+        <h2>Departments & Doctors</h2>
+        {% for dept in departments %}
+        <div class="department-block">
+            <div class="department-header">
+                <strong>{{ dept['name'] }}</strong>
+                <form class="inline ajax-form" method="post" action="/admin/delete_department/{{ dept['id'] }}">
+                    <button type="submit" title="Delete Department">&#10006;</button>
+                </form>
+            </div>
+            <ul class="doctor-list">
+                {% for doc in doctors if doc['department_id'] == dept['id'] %}
+                    <li>
+                        {{ doc['name'] }}
+                        <form class="inline ajax-form" method="post" action="/admin/delete_doctor/{{ doc['id'] }}">
+                            <button type="submit" title="Delete Doctor">&#10006;</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+            <form class="add-doctor-form ajax-form" method="post" action="/admin/add_doctor">
+                <input name="name" placeholder="New Doctor">
+                <input type="hidden" name="department_id" value="{{ dept['id'] }}">
+                <button type="submit">Add Doctor</button>
+            </form>
+        </div>
+        {% endfor %}
+        <form class="ajax-form" method="post" action="/admin/add_department">
+            <input name="name" placeholder="New Department">
+            <button type="submit">Add Department</button>
+        </form>
+
+        <h2>Booking History</h2>
+        <table>
+            <tr>
+                <th>Client</th>
+                <th>Phone</th>
+                <th>Date</th>
+                <th>Department</th>
+                <th>Doctor</th>
+            </tr>
+            {% for id, client_name, phone, appointment_date, department, doctor in bookings %}
+                <tr>
+                    <td>{{ client_name }}</td>
+                    <td>{{ phone }}</td>
+                    <td>{{ appointment_date }}</td>
+                    <td>{{ department }}</td>
+                    <td>{{ doctor }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+<script>
+document.querySelectorAll('.ajax-form').forEach(form => {
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
+            method: form.method,
+            body: formData
+        });
+        if (response.redirected) {
+            window.location.href = response.url;
+        } else {
+            window.location.reload();
+        }
+    });
+});
+</script>
+</body>
+</html>

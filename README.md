@@ -1,22 +1,22 @@
-# AI Voice Assistant for Clinics
+# 🤖 AI Voice Assistant for Clinics
 
-## About
+## 🩺 About
 
-This project is an all-in-one AI-powered phone assistant and admin dashboard for clinics.  
-It automates appointment booking via phone calls, manages doctors and departments, and provides a web dashboard for easy administration.
+This project is an all-in-one **AI-powered phone assistant** and **admin dashboard** for clinics.  
+It automates appointment booking via phone calls, manages doctors and departments, and provides a modern web dashboard for easy administration.
 
-**Key features:**
-- Receives and answers clinic calls using an AI voice assistant (Twilio + TTS)
-- Books appointments by automating the clinic's web form (using Playwright)
-- **Automated booking is performed on:** [https://jtsmedicalcentre.com/appointments/](https://jtsmedicalcentre.com/appointments/)
-- Admin dashboard to manage departments, doctors, and view booking history
-- Edit API keys (Twilio, OpenAI) from the dashboard
-- Prevents adding empty, whitespace, or numeric-only names for departments/doctors
-- SQLite database for logs, bookings, doctors, and departments
+**✨ Key Features:**
+- 📞 Receives and answers clinic calls using an AI voice assistant (Twilio + TTS)
+- 📝 Books appointments by automating the clinic's web form (using Playwright)
+- 🌐 **Automated booking is performed on:** [https://jtsmedicalcentre.com/appointments/](https://jtsmedicalcentre.com/appointments/)
+- 🗂️ Admin dashboard to manage departments, doctors, and view booking history
+- 🔑 Edit API keys (Twilio, OpenAI) from the dashboard
+- 🚫 Prevents adding empty, whitespace, or numeric-only names for departments/doctors
+- 🗃️ SQLite database for logs, bookings, doctors, and departments
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 - **FastAPI** (API & admin dashboard)
 - **Jinja2** (dashboard templates)
@@ -28,7 +28,7 @@ It automates appointment booking via phone calls, manages doctors and department
 
 ---
 
-## How to Run
+## 🚀 How to Run
 
 1. **Clone the repo**
 
@@ -62,14 +62,14 @@ It automates appointment booking via phone calls, manages doctors and department
 
 ---
 
-## Notes
+## 📝 Notes
 
-- Your SQLite database (`calls.db`) is auto-created with the required tables: `departments`, `doctors`, `bookings`.
-- The dashboard prevents adding departments or doctors with empty, whitespace, or numeric-only names.
-- For local AI testing, you can mock AI responses or use open-source models.
-- Update selectors in `booking.py` if the clinic website changes.
-- All add/delete actions in the dashboard use AJAX for a smooth experience.
-- **Automated booking is performed on:** [https://jtsmedicalcentre.com/appointments/](https://jtsmedicalcentre.com/appointments/)
+- 🗄️ Your SQLite database (`calls.db`) is auto-created with the required tables: `departments`, `doctors`, `bookings`.
+- 🚫 The dashboard prevents adding departments or doctors with empty, whitespace, or numeric-only names.
+- 🧪 For local AI testing, you can mock AI responses or use open-source models.
+- 🛠️ Update selectors in `booking.py` if the clinic website changes.
+- ⚡ All add/delete actions in the dashboard use AJAX for a smooth experience.
+- 🌐 **Automated booking is performed on:** [https://jtsmedicalcentre.com/appointments/](https://jtsmedicalcentre.com/appointments/)
 
 ---
 
